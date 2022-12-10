@@ -8,3 +8,7 @@ temp/
 # Scripts
 *.bat
 *.cmd
+
+# NodeJS/NPM
+node_modules
+dist
