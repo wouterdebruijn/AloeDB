@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "outDir": "./dist",
+        "strict": true,
+        "moduleResolution": "node",
+        "sourceMap": true
+    },
+    "include": [
+        "./lib/**/*",
+        "./index.ts",
+    ]
+}
