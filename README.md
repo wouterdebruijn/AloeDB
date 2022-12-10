@@ -3,9 +3,16 @@
 </p>
 
 <p align="center">
-	<h3 align="center">AloeDB</h3>
-	<p align="center"><i>Light, Embeddable, NoSQL database for Deno</i></p>
+	<h3 align="center">AloeDB - NodeJS</h3>
+	<p align="center"><i>Light, Embeddable, NoSQL database ported to NodeJS</i></p>
 </p>
+
+<br>
+
+## ⚗️ Ported version
+This is a forked version of [AloeDB](https://github.com/Kirlovon/AloeDB) by [Kirlovon](https://github.com/Kirlovon). Changed to be able to be used in a modern NodeJS environment.
+
+<br>
 
 <br>
 
@@ -19,14 +26,14 @@
 
 ## 📦 Importing
 ```typescript
-import { Database } from 'https://deno.land/x/aloedb@0.9.0/mod.ts'
+import { Database } from 'aloedb-node'
 ```
 
 <br>
 
 ## 📖 Example
 ```typescript
-import { Database } from 'https://deno.land/x/aloedb@0.9.0/mod.ts';
+import { Database } from 'aloedb-node'
 
 // Structure of stored documents
 interface Film {
@@ -78,7 +85,7 @@ To give you an example, here is the speed of a database operations with *1000* d
 
 ### Initialization
 ```typescript
-import { Database } from 'https://deno.land/x/aloedb@0.9.0/mod.ts';
+import { Database } from 'aloedb-node'
 
 interface Schema {
 	username: string;
