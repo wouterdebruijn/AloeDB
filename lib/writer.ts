@@ -1,6 +1,7 @@
 // Copyright 2020-2021 the AloeDB authors. All rights reserved. MIT license.
 
-import { Document } from './types.ts';
+import { Document } from './types';
+import { writeFile, rename } from "fs/promises";
 
 /**
  * Data writing manager.
@@ -64,7 +65,7 @@ export class Writer {
 		const temp: string = this.path + this.extension;
 		const encoded: string = pretty ? JSON.stringify(documents, null, '\t') : JSON.stringify(documents);
 
-		await Deno.writeTextFile(temp, encoded);
-		await Deno.rename(temp, this.path);
+		await writeFile(temp, encoded, 'utf8');
+		await rename(temp, this.path);
 	}
 }

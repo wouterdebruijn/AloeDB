@@ -1,6 +1,6 @@
 // Copyright 2020-2021 the AloeDB authors. All rights reserved. MIT license.
 
-import { DocumentPrimitive } from './types.ts';
+import { DocumentPrimitive } from './types';
 
 /** Any object without specified structure. */
 interface PlainObject {

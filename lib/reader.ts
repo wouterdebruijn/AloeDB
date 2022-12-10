@@ -1,6 +1,8 @@
 // Copyright 2020-2021 the AloeDB authors. All rights reserved. MIT license.
 
-import { isUndefined, getPathDirname } from './utils.ts';
+import { isUndefined, getPathDirname } from './utils';
+import { lstatSync, Stats, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { readFile, lstat, writeFile, mkdir } from "fs/promises"
 
 /**
  * Database storage file reader.
@@ -20,7 +22,7 @@ export class Reader {
 			return '[]';
 		}
 
-		const content: string = await Deno.readTextFile(path);
+		const content: string = await readFile(path, 'utf8');
 		return content;
 	}
 
@@ -37,7 +39,7 @@ export class Reader {
 			return '[]';
 		}
 
-		const content: string = Deno.readTextFileSync(path);
+		const content: string = readFileSync(path, 'utf8');
 		return content;
 	}
 }
@@ -49,10 +51,10 @@ export class Reader {
  */
 async function exists(path: string): Promise<boolean> {
 	try {
-		await Deno.lstat(path);
+		await lstat(path);
 		return true;
 	} catch (error) {
-		if (error instanceof Deno.errors.NotFound) return false;
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false;
 		throw error;
 	}
 }
@@ -64,10 +66,10 @@ async function exists(path: string): Promise<boolean> {
  */
 function existsSync(path: string): boolean {
 	try {
-		Deno.lstatSync(path);
+		lstatSync(path);
 		return true;
 	} catch (error) {
-		if (error instanceof Deno.errors.NotFound) return false;
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return false;
 		throw error;
 	}
 }
@@ -80,13 +82,13 @@ function existsSync(path: string): boolean {
  */
 async function ensureFile(path: string, data: string = ''): Promise<void> {
 	try {
-		const info = await Deno.lstat(path);
+		const info = await lstat(path);
 		if (!info.isFile) throw new Error('Invalid file specified');
 	} catch (error) {
-		if (error instanceof Deno.errors.NotFound) {
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
 			const dirname: string = getPathDirname(path);
 			await ensureDir(dirname);
-			await Deno.writeTextFile(path, data);
+			await writeFile(path, data, 'utf8');
 			return;
 		}
 
@@ -102,13 +104,13 @@ async function ensureFile(path: string, data: string = ''): Promise<void> {
  */
 function ensureFileSync(path: string, data: string = ''): void {
 	try {
-		const info = Deno.lstatSync(path);
+		const info = lstatSync(path);
 		if (!info.isFile) throw new Error('Invalid file specified');
 	} catch (error) {
-		if (error instanceof Deno.errors.NotFound) {
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
 			const dirname: string = getPathDirname(path);
 			ensureDirSync(dirname);
-			Deno.writeTextFileSync(path, data);
+			writeFileSync(path, data, 'utf8');
 			return;
 		}
 
@@ -123,11 +125,11 @@ function ensureFileSync(path: string, data: string = ''): void {
  */
 async function ensureDir(path: string): Promise<void> {
 	try {
-		const info: Deno.FileInfo = await Deno.lstat(path);
+		const info: Stats = await lstat(path);
 		if (!info.isDirectory) throw new Error('Invalid directory specified');
 	} catch (error) {
-		if (error instanceof Deno.errors.NotFound) {
-			await Deno.mkdir(path, { recursive: true });
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+			await mkdir(path, { recursive: true });
 			return;
 		}
 
@@ -142,11 +144,11 @@ async function ensureDir(path: string): Promise<void> {
  */
 function ensureDirSync(path: string): void {
 	try {
-		const info: Deno.FileInfo = Deno.lstatSync(path);
+		const info: Stats = lstatSync(path);
 		if (!info.isDirectory) throw new Error('Invalid directory specified');
 	} catch (error) {
-		if (error instanceof Deno.errors.NotFound) {
-			Deno.mkdirSync(path, { recursive: true });
+		if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+			mkdirSync(path, { recursive: true });
 			return;
 		}
 

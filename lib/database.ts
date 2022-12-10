@@ -1,10 +1,10 @@
 // Copyright 2020-2021 the AloeDB authors. All rights reserved. MIT license.
 
-import { Writer } from './writer.ts';
-import { Reader } from './reader.ts';
-import { findOneDocument, findMultipleDocuments, updateDocument, parseDatabaseStorage } from './core.ts';
-import { Document, DatabaseConfig, Query, QueryFunction, Update, UpdateFunction, Acceptable } from './types.ts';
-import { cleanArray, deepClone, isObjectEmpty, prepareObject, isArray, isFunction, isObject, isString, isUndefined, isNull } from './utils.ts';
+import { Writer } from './writer';
+import { Reader } from './reader';
+import { findOneDocument, findMultipleDocuments, updateDocument, parseDatabaseStorage } from './core';
+import { Document, DatabaseConfig, Query, QueryFunction, Update, UpdateFunction, Acceptable } from './types';
+import { cleanArray, deepClone, isObjectEmpty, prepareObject, isArray, isFunction, isObject, isString, isUndefined, isNull } from './utils';
 
 // TODO: Before Writing & After Reading configuration
 // TODO: Config with skip, limit, sort, immutable
@@ -68,7 +68,7 @@ export class Database<Schema extends Acceptable<Schema> = Document> {
 	 * @param index Where to insert document.
 	 * @returns Inserted document.
 	 */
-	public async insertOne(document: Schema, index: Number = this.documents.length): Promise<Schema> {
+	public async insertOne(document: Schema, index: number = this.documents.length): Promise<Schema> {
 		const { immutable, validator, autosave } = this.config;
 		if (!isObject(document)) throw new TypeError('Document must be an object');
 

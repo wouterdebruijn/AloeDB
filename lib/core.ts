@@ -9,7 +9,7 @@ import {
 	Update,
 	UpdateValue,
 	UpdateFunction,
-} from './types.ts';
+} from './types';
 
 import {
 	cleanArray,
@@ -25,7 +25,7 @@ import {
 	isUndefined,
 	numbersList,
 	prepareObject,
-} from './utils.ts';
+} from './utils';
 
 /**
  * Find one document.
