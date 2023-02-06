@@ -3,6 +3,7 @@
   "version": "0.9.0",
   "description": "Light, Embeddable, NoSQL database ported to NodeJS",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc"
   },
