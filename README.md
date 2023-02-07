@@ -508,6 +508,88 @@ console.log(db.documents); // [{ field: 'The Nights' }]
 
 <br>
 
+### Active Records
+```typescript
+import { Database } from "aloedb-node";
+import { v1 as uuidv1 } from "uuid";
+
+// Define the active record functions that will be available on the model
+interface AloeDBFunctions<T> {
+  save(): Promise<AloeDBDocument<T>>;
+  delete(): Promise<AloeDBDocument<T> | null>;
+  update(): Promise<AloeDBDocument<T> | null>;
+}
+
+// Create a type that removes the active record functions from the model
+type AloeDBDocument<T> = Omit<T, keyof AloeDBFunctions<T>>;
+
+// Create a database instance using the Document type of the Weather class
+const db = new Database<AloeDBDocument<Weather>>("./weather.json");
+
+// Create a Weather class that implements the active record functions
+export class Weather implements AloeDBFunctions<Weather> {
+  id: string;
+  timestamp: number;
+  temperature: number;
+  humidity: number;
+
+  constructor(
+    data:
+      & Omit<Weather, "save" | "delete" | "update" | "id" | "timestamp">
+      & Partial<Pick<Weather, "id" | "timestamp">>,
+  ) {
+    this.id = data.id ?? uuidv1();
+    this.timestamp = data.timestamp ?? new Date().getTime();
+    this.temperature = data.temperature;
+    this.humidity = data.humidity;
+  }
+
+  save() {
+    return db.insertOne(this);
+  }
+
+  delete() {
+    return db.deleteOne({ id: this.id });
+  }
+
+  update() {
+    return db.updateOne({ id: this.id }, this);
+  }
+
+  static async findOne(
+    query: Partial<Omit<Weather, "save" | "delete" | "update">>,
+  ): Promise<Weather | null> {
+    const object = await db.findOne(query);
+    if (object) return new Weather(object);
+    return null;
+  }
+
+  static async findMany(
+    query: Partial<Omit<Weather, "save" | "delete" | "update">>,
+  ): Promise<Weather[]> {
+    const objects = await db.findMany(query);
+
+    return objects.map((obj) => {
+      return new Weather(obj);
+    });
+  }
+}
+
+// Create a new weather object
+const weather = new Weather({
+  temperature: 20,
+  humidity: 50,
+});
+
+// Save the weather object to the database
+await weather.save();
+
+// Find all weather objects with a temperature of 20
+const foundWeathers = await Weather.findMany({ temperature: 20 });
+console.log({ foundWeathers });
+// { foundWeathers: [Weather {id: '2d5d7140-a70f-11ed-b641-210ec86abb79', timestamp: 1675791914580, temperature: 20, humidity: 50 }] }
+```
+
 ## 🦄 Community Ports
 Surprisingly, this library was ported to other programming languages without my participation. **Much appreciation to this guys for their work!** ❤
 
